@@ -38,11 +38,24 @@ def generate_page(from_path, template_path, dest_path):
     f.write(page)
     f.close()
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if os.path.isfile(dir_path_content):
+        generate_page(dir_path_content, template_path, dest_dir_path.replace("md","html"))
+        return
+    if not os.path.exists(dest_dir_path):
+        os.mkdir(dest_dir_path)
+
+    paths = os.listdir(dir_path_content)
+    if len(paths) == 0: return
+    for path in paths:
+        dest = os.path.join(dest_dir_path, path)
+        source = os.path.join(dir_path_content, path)
+        generate_pages_recursive(source, template_path, dest)
     
 source = "static"
 files = os.listdir(source)
 destination = "public"
 move_files(files, source, destination)
 
-generate_page("content/index.md", "template.html", "public/index.html")
-
+# generate_page("content/index.md", "template.html", "public/index.html")
+generate_pages_recursive("content", "template.html", "public")
