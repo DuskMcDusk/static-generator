@@ -14,6 +14,8 @@ def text_node_to_html_node(text_node):
             return LeafNode("code", text_node.text)
         case TextType.IMAGE:
             return LeafNode("image", "", {"src": text_node.url, "alt": text_node.text})
+        case TextType.LINK:
+            return LeafNode("a", text_node.text, {"href": text_node.url})
         case _:
            raise Exception("Invalid text type")
 
@@ -86,10 +88,10 @@ def split_nodes_link(old_nodes):
 def text_to_textnodes(text):
     text_node = TextNode(text, TextType.TEXT)
 
-    with_bold = split_nodes_delimiter([text_node], "**", TextType.BOLD)
-    with_italic = split_nodes_delimiter(with_bold, "*", TextType.ITALIC)
-    with_code = split_nodes_delimiter(with_italic, "`", TextType.CODE)
-    with_link = split_nodes_link(with_code)
-    with_image = split_nodes_image(with_link)
+    text_node = split_nodes_delimiter([text_node], "**", TextType.BOLD)
+    text_node = split_nodes_delimiter(text_node, "*", TextType.ITALIC)
+    text_node = split_nodes_delimiter(text_node, "`", TextType.CODE)
+    text_node = split_nodes_link(text_node)
+    text_node = split_nodes_image(text_node)
 
-    return with_image
+    return text_node

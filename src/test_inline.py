@@ -145,3 +145,7 @@ class TestTextSplitToNodes(unittest.TestCase):
             TextNode("link", TextType.LINK, "https://boot.dev"),
         ]
         self.assertEqual(result, expected)
+    
+    def test_bold_begin(self):
+        result = text_to_textnodes("**I like Tolkien**. Read my [first post here](/majesty) (sorry the link doesn't work yet)")
+        self.assertEqual(result[0].text_type, TextType.BOLD)
